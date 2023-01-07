@@ -1,0 +1,66 @@
+min 값부터 max값까지 소수값을 정리하는 매트릭스 클래스 PrimeMatrix
+
+생성자를 통해 min, max, pMat[] 변수 초기화
+
+
+int[] getPrimeMatrix()
+1 ~ max까지의 자연수를
+소수인경우 pMat에 1, 소수가 아닌 경우 pMat에 2로 저장
+ex) pMat[2] == 1; pMat[6] == 2;
+pMat 리턴
+
+int[] minMaxMatrix()
+min ~ max까지의 자연수를
+소수인경우 pMat에 1, 소수가 아닌 경우 pMat에 2로 저장
+ex) pMat[2] == 1; pMat[6] == 2;
+
+class PrimeMatrix{
+    int min, max;
+    int[] pMat;
+
+    public PrimeMatrix(int min, int max){
+        this.min = min;
+        this.max = max;
+        this.pMat = new int[max + 1];
+    }
+
+    private int[] getPrimeMatrix(){
+        pMat[1] = 2; pMat[2] = 1;
+        for(int i = 3; i < pMat.length; i++){
+            if(pMat[i] == 2){
+                continue;
+            }
+            if(i % 2 == 0){
+                pMat[i] = 2;
+                continue;
+            }
+            boolean isPrime = true;
+
+            for(int j = 2; j <= Math.sqrt(i); j++){
+                if(i % j == 0){
+                    isPrime = false;
+                    break;
+                }
+            }
+
+            if(isPrime){
+                pMat[i] = 1;
+                for(int j = 2; j * i < pMat.length; j++){
+                    pMat[j * i] = 2;
+                }
+            }
+        }
+        return pMat;
+    }
+
+    public int[] minMaxMatrix(){
+        pMat = getPrimeMatrix();
+        int[] minmax = new int[max - min + 1];
+
+        for(int i = min; i < max + 1; i++){
+            minmax[i - min] = pMat[i];
+        }
+
+        return minmax;
+    }
+}
