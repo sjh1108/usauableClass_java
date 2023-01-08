@@ -1,0 +1,130 @@
+QuickSort 완료 (본인이 짠 코드, 오래걸릴수도 있음)
+MergeSort 미완성
+
+class SORT{
+    int[] arr;
+    public SORT(int[] ar, int sortCase){
+        switch(sortCase){
+            case 0:
+            arr = quickSort(ar);
+            case 1:
+            arr = mergeSort(ar);
+        }
+    }
+    public SORT(int[] arr){
+        arr = quickSort(arr);
+    }
+
+    static int[] quickSort(int[] ar){
+        int[] prev;
+        int[] next;
+
+        int len = ar.length;
+        int pLength = 0, nLength = 0;
+
+        if(ar.length == 0){
+            return ar;
+        } else if(ar.length == 1){
+            return ar;
+        } else if(ar.length == 2){
+            if(ar[0] < ar[1]){
+                return ar;
+            }
+            int k = ar[0];
+            ar[0] = ar[1];
+            ar[1] = k;
+            return ar;
+        }
+        
+        prev = new int[ar.length];
+        next = new int[ar.length];
+
+        int pivot = ar[0];
+
+        for(int i = 1; i < len; i++){
+            if(ar[i] < pivot){
+                prev[pLength++] = ar[i];
+            } else{
+                next[nLength++] = ar[i];
+            }
+        }
+        
+        if(pLength > 1){
+            prev = quickSort(Arrays.copyOf(prev, pLength));
+        } else{
+            prev = Arrays.copyOf(prev, pLength);
+        }
+        if(nLength > 1){
+            next = quickSort(Arrays.copyOf(next, nLength));
+        } else{
+            next = Arrays.copyOf(next, nLength);
+        }
+
+
+        for(int i = 0; i < len; i++){
+            if(i < pLength){
+                ar[i] = prev[i];
+            } else if(i == pLength){
+                ar[i] = pivot;
+            } else{
+                ar[i] = next[i - pLength];
+            }
+        }
+        
+        return ar;
+    }
+
+    static int[] mergeSort(int[] ar){
+        int len = ar.length;
+
+        if(len < 2) return ar; else if(len == 2){
+            if(ar[0] < ar[1]){
+                return ar;
+            } else{
+                int n = ar[0];
+                ar[0] = ar[1];
+                ar[1] = n;
+                return ar;
+            }
+        }
+        
+        int[] prev = Arrays.copyOfRange(ar, 0, len / 2);
+        int[] next = Arrays.copyOfRange(ar, (len / 2), len);
+        
+        prev = mergeSort(prev);
+        next = mergeSort(next);
+
+        ar = merge(prev, next);
+
+        return ar;
+    }
+    static int[] merge(int[] arr1, int[] arr2){
+        int len1 = arr1.length;
+        int len2 = arr2.length;
+
+        if(len1 == 0) return arr2;
+        if(len2 == 0) return arr1;
+        int len = len1 + len2;
+        int[] ar = new int[len];
+
+        int ar1 = 0, ar2 = 0;
+        for(int i = 0; i < len; i++){
+            if(ar1 == len1){
+                ar[i] = arr2[len2];
+                continue;
+            }
+            if(ar2 == len2){
+                ar[i] = arr2[len1];
+                continue;
+            }
+
+            if(arr1[ar1] > arr2[ar2]){
+                ar[i] = arr2[ar2++];
+            } else{
+                ar[i] = arr1[ar1++];
+            }
+        }
+
+        return ar;
+    }
+}
