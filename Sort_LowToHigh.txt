@@ -2,17 +2,20 @@ QuickSort 완료 (본인이 짠 코드, 오래걸릴수도 있음)
 MergeSort 미완성
 
 class SORT{
-    int[] arr;
+    static int[] arr;
+    static int[] sorted;
+
     public SORT(int[] ar, int sortCase){
+        arr = ar;
         switch(sortCase){
             case 0:
             arr = quickSort(ar);
             case 1:
-            arr = mergeSort(ar);
+            mergeSort(ar);
         }
     }
-    public SORT(int[] arr){
-        arr = quickSort(arr);
+    public SORT(int[] ar){
+        arr = quickSort(ar);
     }
 
     static int[] quickSort(int[] ar){
@@ -74,57 +77,90 @@ class SORT{
         return ar;
     }
 
-    static int[] mergeSort(int[] ar){
-        int len = ar.length;
-
-        if(len < 2) return ar; else if(len == 2){
-            if(ar[0] < ar[1]){
-                return ar;
-            } else{
-                int n = ar[0];
-                ar[0] = ar[1];
-                ar[1] = n;
-                return ar;
-            }
+    /**
+     * @param a     정렬할 배열
+     * @param start 배열의 시작점
+     * @param end   배열의 끝 점
+     */
+    private static void mergeSort(int[] a, int start, int end){
+        if(start == end){
+            return;
         }
-        
-        int[] prev = Arrays.copyOfRange(ar, 0, len / 2);
-        int[] next = Arrays.copyOfRange(ar, (len / 2), len);
-        
-        prev = mergeSort(prev);
-        next = mergeSort(next);
 
-        ar = merge(prev, next);
+        int mid = (start + end) / 2;
 
-        return ar;
+        mergeSort(a, start, mid);
+        mergeSort(a, mid + 1, end);
+
+        merge(a, start, mid, end);
     }
-    static int[] merge(int[] arr1, int[] arr2){
-        int len1 = arr1.length;
-        int len2 = arr2.length;
+    /**
+     * @param a     정렬할 배열
+     * @param start 배열의 시작점
+     * @param mid   배열의 중간점
+     * @param end   배열의 끝 점
+     */
+    private static void merge(int[] a, int start, int mid, int end){
+        int pp = start;
+        int np = mid + 1;
 
-        if(len1 == 0) return arr2;
-        if(len2 == 0) return arr1;
-        int len = len1 + len2;
-        int[] ar = new int[len];
+        int idx = start;
 
-        int ar1 = 0, ar2 = 0;
-        for(int i = 0; i < len; i++){
-            if(ar1 == len1){
-                ar[i] = arr2[len2];
-                continue;
-            }
-            if(ar2 == len2){
-                ar[i] = arr2[len1];
-                continue;
-            }
-
-            if(arr1[ar1] > arr2[ar2]){
-                ar[i] = arr2[ar2++];
+        while(pp <= mid && np <= end){
+            if(a[pp] < a[np]){
+                sorted[idx] = a[pp];
+                idx++; pp++;
             } else{
-                ar[i] = arr1[ar1++];
+                sorted[idx] = a[np];
+                idx++; np++;
+            }
+        }
+        if(pp > mid){
+            while(np <= end){
+                sorted[idx] = a[np];
+                idx++; np++;
+            }
+        }
+        if(np > end){
+            while(pp <= mid){
+                sorted[idx] = a[pp];
+                idx++; pp++;
             }
         }
 
-        return ar;
+        for(int i = start; i <= end; i++){
+            a[i] = sorted[i];
+        }
+    }
+    /**
+     * @param mergeSort 병합정렬 
+     * @param a
+     */
+    static void mergeSort(int[] a){
+        sorted = new int[a.length];
+
+        mergeSort(a, 0, a.length - 1);
+    }
+
+
+    /**
+     * @param a     정렬할 배열
+     */
+    static void countingSort(int[] a){
+        sorted = new int[10001];
+        int len = a.length;
+        int count = 0;
+
+        for(int i = 0; i < len; i++){
+            sorted[a[i]]++;
+        }
+        for(int i = 0; i < 10001; i++){
+            if(sorted[i] == 0) continue;
+            for(int j = count; j < sorted[i] + count; j++){
+                a[j] = i;
+            }
+            count += sorted[i];
+            if(count == len) break;
+        }
     }
 }
